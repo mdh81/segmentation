@@ -1,14 +1,21 @@
+# Copyright (c) 2025 Murali Dhanakoti
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
 import multiprocessing
 import os.path
 import sys
-from typing import Optional, List, Dict, Tuple, Set
+from typing import Optional, List, Dict, Tuple
 
-import vtk
-from rich import print
 import ifcopenshell as ifc
 import ifcopenshell.geom
-from segmentation.mesh import TriangleMesh, Triangle
 from math3d import vector3
+from rich import print
+
+from segmentation.mesh import TriangleMesh, Triangle
 from segmentation.renderer import Renderer
 from segmentation.style import Style, Color, Styles
 
