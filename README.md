@@ -1,5 +1,3 @@
-Point Cloud Segmentation
-
 ### Segment point clouds using IFC models
 
 The point cloud and IFC are expected to be twins of each other -- IFC is
