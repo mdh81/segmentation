@@ -6,11 +6,12 @@
 # (at your option) any later version.
 
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import math3d
-from vtkmodules.vtkCommonCore import vtkPoints
+from vtkmodules.vtkCommonCore import vtkPoints, vtkLookupTable, vtkFloatArray, vtkIntArray
 from vtkmodules.vtkCommonDataModel import vtkPolyData, vtkCellArray
+from vtkmodules.vtkRenderingCore import vtkProperty
 
 from segmentation.style import Styles
 
@@ -85,6 +86,23 @@ class TriangleMesh:
     def styles(self, styles: Styles):
         self._styles = styles
 
+    def get_lut_and_prop(self) -> Tuple[vtkLookupTable | None, vtkProperty]:
+        # NOTE
+        # 1. Set the prop opacity to 1 so the opacity from lut is used
+        # 2. Use the first style's specular when there are multiple styles involved to keep this app simple
+        styles = self.styles.list
+        num_styles = len(styles)
+        prop: vtkProperty = styles[0].style
+        if num_styles > 1:
+            lut = vtkLookupTable()
+            lut.SetNumberOfTableValues(num_styles)
+            for i in range(0, num_styles):
+                lut.SetTableValue(i, styles[i].diffuse.r, styles[i].diffuse.g, styles[i].diffuse.b, styles[i].alpha)
+            prop.SetOpacity(1)
+            return lut, prop
+        else:
+            return None, prop
+
     def _build_polydata(self) -> Optional[vtkPolyData]:
         if not self._vertices or not self._triangles:
             return None
@@ -103,8 +121,21 @@ class TriangleMesh:
             cell_array.InsertCellPoint(tri.j)
             cell_array.InsertCellPoint(tri.k)
 
+        style_cell_ids = vtkIntArray()
+        style_cell_ids.SetName('Style Id')
+        style_cell_ids.SetNumberOfComponents(1)
+        style_cell_ids.SetNumberOfTuples(len(self._triangles))
+
+        styles = self._styles.list
+        for i in range(0, len(styles)):
+            face_ids = self._styles.get_faces(styles[i])
+            for face_id_range in face_ids:
+                for face_id in range(face_id_range[0], face_id_range[1] + 1):
+                    style_cell_ids.SetTuple1(face_id, i)
+
         poly_data = vtkPolyData()
         poly_data.SetPoints(points)
         poly_data.SetPolys(cell_array)
+        poly_data.GetCellData().SetScalars(style_cell_ids)
 
         return poly_data
