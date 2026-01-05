@@ -66,6 +66,8 @@ class Styles:
 
     @property
     def list(self) -> List[Style]:
+        if not self._styles:
+            self._assemble()
         return list(self._styles.keys())
 
     def __str__(self):
