@@ -26,7 +26,7 @@ class IFCReader:
     @:type RenderObject
     """
 
-    IGNORED_ENTITIES = ('IfcOpeningElement',)
+    IGNORED_ENTITIES = ('IfcOpeningElement', 'IfcSpace',)
 
     def __init__(self, ifc_file_name: str):
         if not os.path.exists(os.path.normpath(ifc_file_name)):
@@ -117,7 +117,7 @@ if __name__ == '__main__':
         raise RuntimeError(f'Ifc file not specified')
 
     reader: IFCReader = IFCReader(sys.argv[1])
-    reader.summary(True)
+    reader.summary()
     renderer = Renderer()
     for mesh in reader.meshes:
         renderer.meshes.append(MeshRep(mesh.polydata, mesh.category, mesh.get_lut_and_prop()))
