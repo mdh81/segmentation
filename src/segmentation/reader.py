@@ -16,7 +16,7 @@ from math3d import vector3
 from rich import print
 
 from segmentation.mesh import TriangleMesh, Triangle
-from segmentation.renderer import Renderer
+from segmentation.renderer import Renderer, MeshRep
 from segmentation.style import Style, Color, Styles
 
 
@@ -48,17 +48,18 @@ class IFCReader:
         return self._model
 
     @property
-    def meshes(self):
+    def meshes(self) -> List[TriangleMesh]:
         if not self._meshes:
             self._read()
         return self._meshes
 
-    def summary(self):
+    def summary(self, detailed: bool = False) -> None:
         print(f'File name: [yellow]{self.file}[/yellow]')
         print(f'Schema: [bold yellow]{self.model.schema_identifier}[bold yellow]')
         print(f'Number of meshes: {len(self.meshes)}')
-        for m in self._meshes:
-            print(f'{m}')
+        if detailed:
+            for m in self._meshes:
+                print(f'{m}')
 
     def _read(self) -> None:
         self._model = ifc.open(self._ifc_file)
@@ -116,10 +117,8 @@ if __name__ == '__main__':
         raise RuntimeError(f'Ifc file not specified')
 
     reader: IFCReader = IFCReader(sys.argv[1])
-    reader.summary()
-
+    reader.summary(True)
     renderer = Renderer()
     for mesh in reader.meshes:
-        renderer.meshes.append(mesh.polydata)
-        renderer.styles.append(mesh.styles.list[0].style)
+        renderer.meshes.append(MeshRep(mesh.polydata, mesh.category, mesh.get_lut_and_prop()))
     renderer.render()
