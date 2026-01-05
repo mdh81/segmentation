@@ -4,6 +4,7 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
+from dataclasses import dataclass
 
 import vtk
 from vtkmodules.vtkCommonColor import vtkNamedColors
@@ -15,6 +16,15 @@ from vtkmodules.vtkRenderingCore import (
 
 from typing import Tuple, List
 
+_USE_SAMPLE_DATA: bool = False
+
+
+@dataclass(slots=True, frozen=True)
+class MeshRep:
+    polydata: vtk.vtkPolyData
+    category: str
+    style: Tuple[vtk.vtkLookupTable | None, vtk.vtkProperty]
+
 
 class Renderer:
 
@@ -23,12 +33,11 @@ class Renderer:
         return self._meshes
 
     @property
-    def styles(self):
-        return self._styles
+    def filter(self) -> List[str]:
+        return self._filter
 
-    def __init__(self, size: Tuple[int, int] = (1024, 768), use_sample_data: bool = False):
+    def __init__(self, size: Tuple[int, int] = (1024, 768)):
         self._SIZE: Tuple[int, int] = size
-        self._USE_SAMPLE_DATA: bool = use_sample_data
 
         self._ren_win = vtkRenderWindow()
         self._ren_win.SetSize(self._SIZE[0], self._SIZE[1])
@@ -38,9 +47,10 @@ class Renderer:
         self._renderer = vtkRenderer()
         self._colors = vtkNamedColors()
         self._renderer.SetBackground(self._colors.GetColor3d('AliceBlue'))
+        self._renderer.UseDepthPeelingOn()
         self._ren_win.AddRenderer(self._renderer)
-        self._meshes: List[vtk.vtkPolyData] = []
-        self._styles: List[vtk.vtkProperty] = []
+        self._meshes: List[MeshRep] = []
+        self._filter: List[str] = []
 
     def _add_sample_data(self):
         sphere_source = vtk.vtkSphereSource()
@@ -52,17 +62,27 @@ class Renderer:
         sphere_actor.SetMapper(sphere_mapper)
         self._renderer.AddActor(sphere_actor)
 
+    def _is_filtered_out(self, mesh: MeshRep) -> bool:
+        return self._filter and mesh.category not in self._filter
+
     def _add_meshes(self):
-        for mesh, prop in zip(self.meshes, self.styles):
+        for mesh in (mesh for mesh in self.meshes if not self._is_filtered_out(mesh)):
+            lut = mesh.style[0]
+            prop = mesh.style[1]
             mesh_mapper = vtk.vtkPolyDataMapper()
-            mesh_mapper.SetInputData(mesh)
+            mesh_mapper.SetInputData(mesh.polydata)
+            if lut:
+                mesh_mapper.SetLookupTable(lut)
+                mesh_mapper.SetScalarModeToUseCellData()
+            else:
+                mesh_mapper.ScalarVisibilityOff()
             mesh_actor = vtk.vtkActor()
             mesh_actor.SetProperty(prop)
             mesh_actor.SetMapper(mesh_mapper)
             self._renderer.AddActor(mesh_actor)
 
     def render(self):
-        if self._USE_SAMPLE_DATA:
+        if _USE_SAMPLE_DATA:
             self._add_sample_data()
         else:
             self._add_meshes()
@@ -72,6 +92,6 @@ class Renderer:
 
 
 if __name__ == '__main__':
-    Renderer._USE_SAMPLE_DATA = True
+    _USE_SAMPLE_DATA = True
     renderer = Renderer()
     renderer.render()
