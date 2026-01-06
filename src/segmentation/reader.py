@@ -12,12 +12,16 @@ from typing import Optional, List, Dict, Tuple
 
 import ifcopenshell as ifc
 import ifcopenshell.geom
+import pye57
 from math3d import vector3
 from rich import print
 
 from segmentation.mesh import TriangleMesh, Triangle
+from segmentation.pointcloud import PointCloud
 from segmentation.renderer import Renderer, MeshRep
 from segmentation.style import Style, Color, Styles
+from vtkmodules.vtkCommonDataModel import vtkPolyData
+from vtkmodules.vtkIOLegacy import vtkPolyDataWriter
 
 
 class IFCReader:
@@ -111,14 +115,44 @@ class IFCReader:
         return styles
 
 
+class E57Reader:
+
+    def __init__(self, e57_file: str):
+        self._e57_file = e57_file
+        self._pointcloud: PointCloud = None
+
+    def summary(self) -> None:
+        print(f'Point cloud file {self._e57_file}')
+        print(f'Number of points: {len(self.pointcloud.points)}')
+
+    @property
+    def pointcloud(self) -> PointCloud:
+        if self._pointcloud is None:
+            data = pye57.E57(self._e57_file)
+            self._pointcloud = PointCloud(data)
+        return self._pointcloud
+
+
 if __name__ == '__main__':
 
     if len(sys.argv) != 2:
-        raise RuntimeError(f'Ifc file not specified')
+        raise RuntimeError('File to read is not specified')
 
-    reader: IFCReader = IFCReader(sys.argv[1])
-    reader.summary()
     renderer = Renderer()
-    for mesh in reader.meshes:
-        renderer.meshes.append(MeshRep(mesh.polydata, mesh.category, mesh.get_lut_and_prop()))
+
+    if sys.argv[1].endswith('.ifc'):
+        reader: IFCReader = IFCReader(sys.argv[1])
+        reader.summary()
+        for mesh in reader.meshes:
+            renderer.meshes.append(MeshRep(mesh.polydata, mesh.category, mesh.get_lut_and_prop()))
+    elif sys.argv[1].endswith('.e57'):
+        reader: E57Reader = E57Reader(sys.argv[1])
+        reader.summary()
+        renderer.pointcloud = reader.pointcloud.polydata
+        writer = vtkPolyDataWriter()
+        writer.SetFileTypeToASCII()
+        writer.SetFileName(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test.vtk'))
+        writer.SetInputData(renderer.pointcloud)
+        writer.Write()
+
     renderer.render()

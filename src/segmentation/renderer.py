@@ -33,6 +33,14 @@ class Renderer:
         return self._meshes
 
     @property
+    def pointcloud(self):
+        return self._pointcloud
+
+    @pointcloud.setter
+    def pointcloud(self, pointcloud: vtk.vtkPolyData):
+        self._pointcloud = pointcloud
+
+    @property
     def filter(self) -> List[str]:
         return self._filter
 
@@ -51,6 +59,7 @@ class Renderer:
         self._ren_win.AddRenderer(self._renderer)
         self._meshes: List[MeshRep] = []
         self._filter: List[str] = []
+        self._pointcloud: vtk.vtkPolyData | None = None
 
     def _add_sample_data(self):
         sphere_source = vtk.vtkSphereSource()
@@ -81,11 +90,28 @@ class Renderer:
             mesh_actor.SetMapper(mesh_mapper)
             self._renderer.AddActor(mesh_actor)
 
+    def _add_pointcloud(self):
+        if self._pointcloud:
+            pointcloud_mapper = vtk.vtkPolyDataMapper()
+            pointcloud_mapper.SetInputData(self._pointcloud)
+            if self._pointcloud.GetPointData().GetNumberOfArrays() > 0:
+                pointcloud_mapper.SetScalarModeToUsePointData()
+                pointcloud_mapper.SetColorModeToDirectScalars()
+                pointcloud_mapper.ScalarVisibilityOn()
+            pointcloud_actor = vtk.vtkActor()
+            pointcloud_actor.GetProperty().SetPointSize(3)
+            pointcloud_actor.SetMapper(pointcloud_mapper)
+            self._renderer.AddActor(pointcloud_actor)
+
     def render(self):
         if _USE_SAMPLE_DATA:
             self._add_sample_data()
         else:
             self._add_meshes()
+            self._add_pointcloud()
+        orientation_widget = vtk.vtkCameraOrientationWidget()
+        orientation_widget.SetParentRenderer(self._renderer)
+        orientation_widget.On()
         self._ren_win.Render()
         self._iren.Initialize()
         self._iren.Start()
