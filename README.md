@@ -7,8 +7,9 @@ schematic model, point cloud is the reality-capture version of the same model.
 As such, segmentation only works when the two models are aligned already
 
 ```bash
-$ brew install poetry
+$ brew install poetry #if poetry not installed
 $ cd <this project directory>
+$ poetry config --local virtualenvs.in-project true # if local venvs are not globally enabled
 $ poetry install
 $ source .venv/bin/activate
 ```
