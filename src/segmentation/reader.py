@@ -149,10 +149,5 @@ if __name__ == '__main__':
         reader: E57Reader = E57Reader(sys.argv[1])
         reader.summary()
         renderer.pointcloud = reader.pointcloud.polydata
-        writer = vtkPolyDataWriter()
-        writer.SetFileTypeToASCII()
-        writer.SetFileName(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test.vtk'))
-        writer.SetInputData(renderer.pointcloud)
-        writer.Write()
 
     renderer.render()
