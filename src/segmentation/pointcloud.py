@@ -8,7 +8,7 @@ import math3d
 import numpy as np
 import pye57
 import vtk
-from math3d import vector3, vector4, matrix4
+from math3d import vector3, vector4, matrix4, identity4
 
 from typing import Dict, List
 
@@ -22,7 +22,7 @@ class PointCloud:
         self._coords: List[vector3] = []
         self._colors: List[Color] = []
         self._polydata = None
-        self._transform: matrix4 = matrix4([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]], math3d.col_major)
+        self._transform: matrix4 = identity4()
 
     @property
     def transform(self):
