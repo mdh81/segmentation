@@ -400,14 +400,14 @@ testing = ["coverage", "pytest", "pytest-cov", "pytest-regressions", "requests"]
 
 [[package]]
 name = "math3d-py"
-version = "1.0.9"
+version = "1.0.11"
 description = "Python bindings for 3dmath"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "math3d_py-1.0.9-cp313-cp313-macosx_26_0_arm64.whl", hash = "sha256:f49001b84a840a63a6780715531261c1213f8b0f271a3e3ee92773582fcf8b81"},
-    {file = "math3d_py-1.0.9.tar.gz", hash = "sha256:cdf05788b6a378460cab2e49a5c018b272f77e6cdfbde9630e4b3e3f0099a044"},
+    {file = "math3d_py-1.0.11-cp313-cp313-macosx_26_0_arm64.whl", hash = "sha256:f42c8df95c15de4e93c36b2a1763958b4f005464934c4d935c191477db1e7208"},
+    {file = "math3d_py-1.0.11.tar.gz", hash = "sha256:08545b4917bd93d668a6f31310a68eb6658b5d55341533425634e28e3f8f394f"},
 ]
 
 [[package]]
@@ -969,4 +969,4 @@ web = ["wslink (>=1.0.4)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.15"
-content-hash = "2516563f1d5104f167517f59e2f6e55ce08b5de9ffb6abc583696145c13edd53"
+content-hash = "2c0139487523091627ac4511fc6ba0d287f648e600835eabf292c3c28628510a"
