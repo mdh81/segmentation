@@ -10,7 +10,7 @@ point cloud with the reference model is provided
 #### Run
 
 ```bash
-$ brew install poetry #if poetry not installed
+$ brew install poetry # if poetry is not installed
 $ cd <this project directory>
 $ poetry install
 $ source .venv/bin/activate

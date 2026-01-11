@@ -1,7 +1,7 @@
 [project]
 name = "segmentation"
 version = "1.0.0"
-description = "Segment point clouds using IFC models"
+description = "Point cloud segmentation prototype"
 authors = [
     { name = "Murali Dhanakoti", email = "dhanakoti.murali@gmail.com" }
 ]
