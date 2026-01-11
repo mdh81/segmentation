@@ -2,16 +2,17 @@
 
 This is a prototype for a point cloud segmentation solution
 
-The point cloud and IFC are expected to be twins of each other -- IFC is
+The point cloud and reference model are expected to be twins of each other -- reference model is
 schematic model, point cloud is the reality-capture version of the same model.
-As such, segmentation only works when the two models are aligned already
+As such, segmentation only works when the two models are aligned already or if a transform to align
+point cloud with the reference model is provided
+
+#### Run
 
 ```bash
 $ brew install poetry #if poetry not installed
 $ cd <this project directory>
 $ poetry install
 $ source .venv/bin/activate
+$ segmentation --help 
 ```
-
-Segmentation is WIP, at the moment, you can run individual modules within the segmentation package to exercise/test
-various functionalities 
