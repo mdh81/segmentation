@@ -1,4 +1,4 @@
-### Segment point clouds using IFC models
+### Point cloud segmentation
 
 This is a prototype for a point cloud segmentation solution
 
