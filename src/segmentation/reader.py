@@ -20,8 +20,6 @@ from segmentation.mesh import TriangleMesh, Triangle
 from segmentation.pointcloud import PointCloud
 from segmentation.renderer import Renderer, MeshRep
 from segmentation.style import Style, Color, Styles
-from vtkmodules.vtkCommonDataModel import vtkPolyData
-from vtkmodules.vtkIOLegacy import vtkPolyDataWriter
 
 
 class IFCReader:
@@ -86,7 +84,7 @@ class IFCReader:
         vertices = shape.geometry.verts
         faces = shape.geometry.faces
         for i in range(0, len(vertices), 3):
-            trimesh.vertices.append(vector3([vertices[i], vertices[i + 1], vertices[i + 2]]))
+            trimesh.vertices.append(vector3(vertices[i], vertices[i + 1], vertices[i + 2]))
         for i in range(0, len(faces), 3):
             trimesh.triangles.append(Triangle(faces[i], faces[i + 1], faces[i + 2]))
         IFCReader._style_mesh(trimesh, shape.geometry.materials, shape.geometry.material_ids)
@@ -119,7 +117,7 @@ class E57Reader:
 
     def __init__(self, e57_file: str):
         self._e57_file = e57_file
-        self._pointcloud: PointCloud = None
+        self._pointcloud: PointCloud | None = None
 
     def summary(self) -> None:
         print(f'Point cloud file {self._e57_file}')

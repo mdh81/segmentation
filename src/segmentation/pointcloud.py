@@ -4,13 +4,12 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-import math3d
+from typing import List
+
 import numpy as np
 import pye57
 import vtk
 from math3d import vector3, vector4, matrix4, identity4
-
-from typing import Dict, List
 
 from segmentation.style import Color
 
@@ -58,18 +57,16 @@ class PointCloud:
                 x: np.ndarray = e57_data['cartesianX']
                 y: np.ndarray = e57_data['cartesianY']
                 z: np.ndarray = e57_data['cartesianZ']
-                assert len(x) == len(y) == len(z)
-                for i in range(len(x)):
-                    self._coords.append(vector3([x[i], y[i], z[i]]))
+                for px, py, pz in zip(x, y, z, strict=True):
+                    self._coords.append(vector3(px, py, pz))
                 if 'colorRed' in e57_data:
                     r: np.ndarray = e57_data['colorRed']
                     g: np.ndarray = e57_data['colorGreen']
                     b: np.ndarray = e57_data['colorBlue']
-                    assert len(r) == len(g) == len(b)
-                    for i in range(len(r)):
-                        self._colors.append(Color(r[i] / 255, g[i] / 255, b[i] / 255))
+                    for pr, pg, pb in zip(r, g, b, strict=True):
+                        self._colors.append(Color(pr / 255, pg / 255, pb / 255))
 
-    def _assemble(self) -> vtk.vtkPolyData:
+    def _assemble(self) -> None:
         if not self._coords:
             self._read()
         self._polydata = vtk.vtkPolyData()
@@ -77,9 +74,8 @@ class PointCloud:
         cells = vtk.vtkCellArray()
         points.SetNumberOfPoints(len(self._coords))
         cells.AllocateEstimate(len(self._coords), 1)
-        has_colors = True if self._colors else False
-        if has_colors:
-            colors = vtk.vtkFloatArray()
+        colors = vtk.vtkFloatArray() if self._colors else None
+        if colors:
             colors.SetName('rgb')
             colors.SetNumberOfComponents(3)
             colors.SetNumberOfTuples(len(self._colors))
@@ -88,9 +84,9 @@ class PointCloud:
             points.SetPoint(idx, transformed_point.x, transformed_point.y, transformed_point.z)
             cells.InsertNextCell(1)
             cells.InsertCellPoint(idx)
-            if has_colors:
+            if colors:
                 colors.SetTuple3(idx, self._colors[idx].r, self._colors[idx].g, self._colors[idx].b)
         self._polydata.SetPoints(points)
         self._polydata.SetVerts(cells)
-        if has_colors:
+        if colors:
             self._polydata.GetPointData().SetScalars(colors)
