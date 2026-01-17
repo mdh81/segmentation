@@ -26,7 +26,11 @@ requirement is that poetry in the below steps is able to find 3.13 to set up the
 $ brew install poetry # if poetry is not installed
 $ cd <this project directory>
 $ poetry env use python3.13
+# Alternative 1
 $ source .venv/bin/activate 
 $ poetry install
 $ segmentation --help 
+# Alternative 2 (if there is no need to experiment with the package in the interpreter) 
+$ poetry install
+$ poetry run segmentation --help
 ```
