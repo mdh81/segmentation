@@ -400,14 +400,14 @@ testing = ["coverage", "pytest", "pytest-cov", "pytest-regressions", "requests"]
 
 [[package]]
 name = "math3d-py"
-version = "1.0.11"
+version = "1.0.12"
 description = "Python bindings for 3dmath"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "math3d_py-1.0.11-cp313-cp313-macosx_26_0_arm64.whl", hash = "sha256:f42c8df95c15de4e93c36b2a1763958b4f005464934c4d935c191477db1e7208"},
-    {file = "math3d_py-1.0.11.tar.gz", hash = "sha256:08545b4917bd93d668a6f31310a68eb6658b5d55341533425634e28e3f8f394f"},
+    {file = "math3d_py-1.0.12-cp313-cp313-macosx_26_0_arm64.whl", hash = "sha256:482a56d546f39433ef245e231aa4658e1f228dc42c28cba6a7475f05db94ad44"},
+    {file = "math3d_py-1.0.12.tar.gz", hash = "sha256:33fcf54f1e355fc8c730ea73fb33c4477f74168757cfa5cffdee6e87e495737e"},
 ]
 
 [[package]]
