@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
 import math3d
-from vtkmodules.vtkCommonCore import vtkPoints, vtkLookupTable, vtkFloatArray, vtkIntArray
+from vtkmodules.vtkCommonCore import vtkPoints, vtkLookupTable, vtkIntArray
 from vtkmodules.vtkCommonDataModel import vtkPolyData, vtkCellArray
 from vtkmodules.vtkRenderingCore import vtkProperty
 
