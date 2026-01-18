@@ -9,7 +9,7 @@ from typing import List
 import numpy as np
 import pye57
 import vtk
-from math3d import vector3, vector4, matrix4, identity4
+from math3d import Vector3, Vector4, Matrix4, Identity4
 
 from segmentation.style import Color
 
@@ -18,21 +18,21 @@ class PointCloud:
 
     def __init__(self, e57: pye57.E57):
         self._e57 = e57
-        self._coords: List[vector3] = []
+        self._coords: List[Vector3] = []
         self._colors: List[Color] = []
         self._polydata = None
-        self._transform: matrix4 = identity4()
+        self._transform: Matrix4 = Identity4()
 
     @property
     def transform(self):
         return self._transform
 
     @transform.setter
-    def transform(self, transform: matrix4):
+    def transform(self, transform: Matrix4):
         self._transform = transform
 
     @property
-    def points(self) -> List[vector3]:
+    def points(self) -> List[Vector3]:
         if not self._coords:
             self._read()
         return self._coords
@@ -58,7 +58,7 @@ class PointCloud:
                 y: np.ndarray = e57_data['cartesianY']
                 z: np.ndarray = e57_data['cartesianZ']
                 for px, py, pz in zip(x, y, z, strict=True):
-                    self._coords.append(vector3(px, py, pz))
+                    self._coords.append(Vector3(px, py, pz))
                 if 'colorRed' in e57_data:
                     r: np.ndarray = e57_data['colorRed']
                     g: np.ndarray = e57_data['colorGreen']
@@ -80,7 +80,7 @@ class PointCloud:
             colors.SetNumberOfComponents(3)
             colors.SetNumberOfTuples(len(self._colors))
         for idx, coord in enumerate(self._coords):
-            transformed_point: vector4 = self._transform * vector4(coord)
+            transformed_point: Vector4 = self._transform * Vector4(coord)
             points.SetPoint(idx, transformed_point.x, transformed_point.y, transformed_point.z)
             cells.InsertNextCell(1)
             cells.InsertCellPoint(idx)

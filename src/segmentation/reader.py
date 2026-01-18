@@ -13,7 +13,7 @@ from typing import Optional, List, Dict, Tuple
 import ifcopenshell as ifc
 import ifcopenshell.geom
 import pye57
-from math3d import vector3
+from math3d import Vector3
 from rich import print
 
 from segmentation.mesh import TriangleMesh, Triangle
@@ -84,7 +84,7 @@ class IFCReader:
         vertices = shape.geometry.verts
         faces = shape.geometry.faces
         for i in range(0, len(vertices), 3):
-            trimesh.vertices.append(vector3(vertices[i], vertices[i + 1], vertices[i + 2]))
+            trimesh.vertices.append(Vector3(vertices[i], vertices[i + 1], vertices[i + 2]))
         for i in range(0, len(faces), 3):
             trimesh.triangles.append(Triangle(faces[i], faces[i + 1], faces[i + 2]))
         IFCReader._style_mesh(trimesh, shape.geometry.materials, shape.geometry.material_ids)

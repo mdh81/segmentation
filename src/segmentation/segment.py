@@ -28,10 +28,10 @@ def _setup_args() -> ArgumentParser:
     return parser
 
 
-def _parse_args(parser: ArgumentParser) -> Tuple[str, str, math3d.matrix4]:
+def _parse_args(parser: ArgumentParser) -> Tuple[str, str, math3d.Matrix4]:
     args = parser.parse_args()
     return (args.reference, args.pointcloud,
-            math3d.identity4() if not args.transform else math3d.matrix4(args.transform, math3d.order.col_major))
+            math3d.Identity4() if not args.transform else math3d.Matrix4(args.transform, math3d.order.col_major))
 
 
 def main():
