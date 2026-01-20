@@ -27,3 +27,9 @@ in-project = true
 
 [project.scripts]
 segmentation = "segmentation.segment:main"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^9.0.2"
+pytest-mock = "^3.15.1"
+math3d-py = "^1.4.0"
+
