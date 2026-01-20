@@ -10,7 +10,7 @@ from __future__ import annotations
 import argparse
 from typing import List, Tuple
 
-from math3d import AABB, Extent, Vector3
+from math3d import AABB, Extent, Vector3, Vector4
 from vtkmodules.vtkCommonCore import vtkPoints
 from vtkmodules.vtkCommonDataModel import vtkPolyData, vtkCellArray
 from vtkmodules.vtkFiltersCore import vtkAppendPolyData
@@ -123,23 +123,14 @@ class Octree:
         y: Extent = Extent()
         z: Extent = Extent()
         for trimesh in trimeshes:
-            append_polydata.AddInputData(trimesh.polydata)
             for vertex in trimesh.vertices:
-                x.update(vertex.x)
-                y.update(vertex.y)
-                z.update(vertex.z)
+                transformed_vertex = trimesh.transform * Vector4(vertex)
+                x.update(transformed_vertex.x)
+                y.update(transformed_vertex.y)
+                z.update(transformed_vertex.z)
             trimesh_bounds: AABB = AABB(x, y, z)
-            bounds.merge(trimesh_bounds.transform(trimesh.transform))
+            bounds.merge(trimesh_bounds)
         self._octant = Octant(bounds.min(), bounds.max())
-        append_polydata.Update()
-        writer = vtkPolyDataWriter()
-        writer.SetFileName("octree_input.vtk")
-        writer.SetInputData(append_polydata.GetOutput())
-        writer.Write()
-        writer = vtkPolyDataWriter()
-        writer.SetFileName("octree_output.vtk")
-        writer.SetInputData(self.polydata)
-        writer.Write()
 
     @property
     def leaves(self) -> List[Octant]:
