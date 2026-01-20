@@ -33,6 +33,10 @@ class Renderer:
         return self._meshes
 
     @property
+    def others(self):
+        return self._others
+
+    @property
     def pointcloud(self):
         return self._pointcloud
 
@@ -60,6 +64,7 @@ class Renderer:
         self._meshes: List[MeshRep] = []
         self._filter: List[str] = []
         self._pointcloud: vtk.vtkPolyData | None = None
+        self._others: List[vtk.vtkPolyData] = []
 
     def _add_sample_data(self):
         sphere_source = vtk.vtkSphereSource()
@@ -103,15 +108,28 @@ class Renderer:
             pointcloud_actor.SetMapper(pointcloud_mapper)
             self._renderer.AddActor(pointcloud_actor)
 
+    def _add_others(self):
+        if self._others:
+            for other in self._others:
+                mapper = vtk.vtkPolyDataMapper()
+                mapper.SetInputData(other)
+                actor = vtk.vtkActor()
+                actor.SetMapper(mapper)
+                actor.GetProperty().SetLineWidth(2.0)
+                actor.GetProperty().SetColor(self._colors.GetColor3d('DarkKhaki'))
+                self._renderer.AddActor(actor)
+
     def render(self):
         if _USE_SAMPLE_DATA:
             self._add_sample_data()
         else:
             self._add_meshes()
             self._add_pointcloud()
+            self._add_others()
         orientation_widget = vtk.vtkCameraOrientationWidget()
         orientation_widget.SetParentRenderer(self._renderer)
         orientation_widget.On()
+        self._renderer.AntiAliasedRenderer = True
         self._ren_win.Render()
         self._iren.Initialize()
         self._iren.Start()
