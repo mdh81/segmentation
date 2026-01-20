@@ -9,7 +9,7 @@ from typing import List
 import numpy as np
 import pye57
 import vtk
-from math3d import Vector3, Vector4, Matrix4, Identity4
+from math3d import Vector3, Vector4, Matrix4, Identity4, AABB, Extent
 
 from segmentation.style import Color
 
@@ -36,6 +36,18 @@ class PointCloud:
         if not self._coords:
             self._read()
         return self._coords
+
+    @property
+    def bounds(self) -> AABB:
+        points: List[Vector3] = self.points
+        x: Extent = Extent()
+        y: Extent = Extent()
+        z: Extent = Extent()
+        for point in points:
+            x.update(point.x)
+            y.update(point.y)
+            z.update(point.z)
+        return AABB(x, y, z)
 
     @property
     def colors(self) -> List[Color]:
