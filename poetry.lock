@@ -425,14 +425,14 @@ testing = ["coverage", "pytest", "pytest-cov", "pytest-regressions", "requests"]
 
 [[package]]
 name = "math3d-py"
-version = "1.4.1"
+version = "1.4.2"
 description = "Python bindings for 3dmath"
 optional = false
 python-versions = "<3.14,>=3.13"
 groups = ["main", "dev"]
 files = [
-    {file = "math3d_py-1.4.1-cp313-cp313-macosx_26_0_arm64.whl", hash = "sha256:7861f6627bbfa1ddfa7dde02976f055885a14921824d8e78f6f192d584f2bb01"},
-    {file = "math3d_py-1.4.1.tar.gz", hash = "sha256:b63dcb7f67b5ced7ff4a51986b9c3dd0c7d2da3a4b0571e7780da9d574a5b084"},
+    {file = "math3d_py-1.4.2-cp313-cp313-macosx_26_0_arm64.whl", hash = "sha256:0b1141e74be84ad74da0d0650fcce38fef39812adec6d4a2630ab172f68ce1b3"},
+    {file = "math3d_py-1.4.2.tar.gz", hash = "sha256:2ec3cb147e3ff33ce125a2e4ac904f7e96851fb49ee4b9af8dd74eb5fcb51b67"},
 ]
 
 [[package]]

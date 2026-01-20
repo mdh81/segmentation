@@ -7,10 +7,8 @@
 
 from __future__ import annotations
 
-import sys
-import typing
-from typing import List, Tuple
 import argparse
+from typing import List, Tuple
 
 from math3d import AABB, Extent, Vector3
 from vtkmodules.vtkCommonCore import vtkPoints
@@ -18,7 +16,6 @@ from vtkmodules.vtkCommonDataModel import vtkPolyData, vtkCellArray
 from vtkmodules.vtkFiltersCore import vtkAppendPolyData
 from vtkmodules.vtkFiltersSources import vtkSphereSource, vtkConeSource
 from vtkmodules.vtkIOLegacy import vtkPolyDataWriter
-from segmentation import pointcloud, renderer, reader
 
 from segmentation.mesh import TriangleMesh
 from segmentation.reader import E57Reader, IFCReader
@@ -120,17 +117,29 @@ class Octree:
         return Octree(bounds)
 
     def add(self, trimeshes: List[TriangleMesh]):
+        append_polydata: vtkAppendPolyData = vtkAppendPolyData()
         bounds: AABB = AABB()
         x: Extent = Extent()
         y: Extent = Extent()
         z: Extent = Extent()
         for trimesh in trimeshes:
+            append_polydata.AddInputData(trimesh.polydata)
             for vertex in trimesh.vertices:
                 x.update(vertex.x)
                 y.update(vertex.y)
                 z.update(vertex.z)
-            bounds.merge(AABB(x, y, z))
+            trimesh_bounds: AABB = AABB(x, y, z)
+            bounds.merge(trimesh_bounds.transform(trimesh.transform))
         self._octant = Octant(bounds.min(), bounds.max())
+        append_polydata.Update()
+        writer = vtkPolyDataWriter()
+        writer.SetFileName("octree_input.vtk")
+        writer.SetInputData(append_polydata.GetOutput())
+        writer.Write()
+        writer = vtkPolyDataWriter()
+        writer.SetFileName("octree_output.vtk")
+        writer.SetInputData(self.polydata)
+        writer.Write()
 
     @property
     def leaves(self) -> List[Octant]:
