@@ -16,7 +16,7 @@ from math3d import AABB, Extent, Vector3
 from vtkmodules.vtkCommonCore import vtkPoints
 from vtkmodules.vtkCommonDataModel import vtkPolyData, vtkCellArray
 from vtkmodules.vtkFiltersCore import vtkAppendPolyData
-from vtkmodules.vtkFiltersSources import vtkSphereSource
+from vtkmodules.vtkFiltersSources import vtkSphereSource, vtkConeSource
 from vtkmodules.vtkIOLegacy import vtkPolyDataWriter
 from segmentation import pointcloud, renderer, reader
 
@@ -144,7 +144,7 @@ class Octree:
         append_polydata: vtkAppendPolyData = vtkAppendPolyData()
         for leaf in leaves:
             append_polydata.AddInputData(leaf.polydata)
-        append_polydata.Update();
+        append_polydata.Update()
         return append_polydata.GetOutput()
 
 
@@ -154,7 +154,7 @@ if __name__ == "__main__":
         prog='Octree Test',
     )
     parser.add_argument('-mdl', help='Model to generate octree for in IFC or e57 format')
-    parser.add_argument('-vtk', help='Model to generate octree for a sample vtk polydata', action='store_true')
+    parser.add_argument('-vtk', help='Generate octree for a sample vtk polydata', action='store_true')
     args = parser.parse_args()
 
     renderer: Renderer = Renderer()
@@ -163,13 +163,20 @@ if __name__ == "__main__":
         octree = Octree(AABB(Vector3(-10, -10, -10), Vector3(10, 10, 10)))
         renderer.others.append(octree.polydata)
     elif args.vtk:
+        append = vtkAppendPolyData()
         sphere = vtkSphereSource()
+        sphere.SetRadius(3)
         sphere.SetThetaResolution(25)
         sphere.SetPhiResolution(25)
-        sphere.Update()
-        octree = Octree.from_polydata(sphere.GetOutput())
+        append.AddInputConnection(0, sphere.GetOutputPort())
+        cone = vtkConeSource()
+        cone.SetResolution(10)
+        cone.SetCenter(10, 10, 10)
+        append.AddInputConnection(0, cone.GetOutputPort())
+        append.Update()
+        octree = Octree.from_polydata(append.GetOutput())
         renderer.others.append(octree.polydata)
-        renderer.others.append(sphere.GetOutput())
+        renderer.others.append(append.GetOutput())
     else:
         if args.mdl.endswith('.e57'):
             reader: E57Reader = E57Reader(args.mdl)
