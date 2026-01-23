@@ -22,6 +22,9 @@ class Color:
 
 
 class Style:
+    """
+    A material that maps to ifc open shell's material definition
+    """
     _AMBIENT_INTENSITY = 0.15
     _DIFFUSE_INTENSITY = 0.85
     _AMBIENT_COLOR = Color(0.75, 0.75, 0.75)
@@ -59,6 +62,11 @@ class Style:
 
 
 class Styles:
+    """
+    Maintains a list of style assignments originally in the form of 1 to N triangle indices
+    Once all style assignments are complete, and request to assemble the styles is made, it
+    compresses the triangle indices into a sequence of contiguous ranges
+    """
 
     def __init__(self):
         self._styles: Dict[Style, List[Tuple[int, int]]] = {}

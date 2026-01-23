@@ -24,6 +24,12 @@ class Triangle:
 
 
 class TriangleMesh:
+    """
+    A triangle mesh that can be built from a list of vec3s and i,j,k tuples that define
+    connectivity into the former vec3 list. Converts this mesh to a polydata that can be
+    rendered by a vtk renderer. Aggregates styles and manages them via a lookup table or
+    a single property if there is a 1:1 relationship between itself and a style
+    """
 
     def __init__(self, category: str):
         self._vertices: List[math3d.Vector3] = []

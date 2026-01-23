@@ -27,6 +27,15 @@ class MeshRep:
 
 
 class Renderer:
+    """
+        A vtk-based renderer for triangle meshes and point cloud.
+        Relies on @:type MeshRep to provide polydata representation
+        of triangle meshes along with a lookup table that provides
+        cell colors (or a single property if style is uniform across the mesh)
+        Relies on @:type PointCloud to provide a point set polydata
+        Can optionally render sample geometries and other supporting data like
+        octrees if they are converted to vtk polydata and set via property "others"
+    """
 
     @property
     def meshes(self):

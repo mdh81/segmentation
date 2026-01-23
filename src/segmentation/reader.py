@@ -25,7 +25,7 @@ from segmentation.style import Style, Color, Styles
 class IFCReader:
     """
     Reads an IFC file using ifcopenshell. Converts each IFC object into
-    @:type RenderObject
+    @:type MeshRep via @:type TriangleMesh and @type:Style
     """
 
     IGNORED_ENTITIES = ('IfcOpeningElement', 'IfcSpace',)
@@ -138,7 +138,7 @@ if __name__ == '__main__':
 
     renderer = Renderer()
 
-    if sys.argv[1].endswith('.ifc'):
+    if sys.argv[1].endswith('.ifc') or sys.argv[1].endswith('.ifczip'):
         reader: IFCReader = IFCReader(sys.argv[1])
         reader.summary()
         for mesh in reader.meshes:

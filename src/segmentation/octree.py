@@ -15,7 +15,6 @@ from vtkmodules.vtkCommonCore import vtkPoints
 from vtkmodules.vtkCommonDataModel import vtkPolyData, vtkCellArray
 from vtkmodules.vtkFiltersCore import vtkAppendPolyData
 from vtkmodules.vtkFiltersSources import vtkSphereSource, vtkConeSource
-from vtkmodules.vtkIOLegacy import vtkPolyDataWriter
 
 from segmentation.mesh import TriangleMesh
 from segmentation.reader import E57Reader, IFCReader

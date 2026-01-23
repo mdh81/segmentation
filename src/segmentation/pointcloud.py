@@ -15,6 +15,9 @@ from segmentation.style import Color
 
 
 class PointCloud:
+    """
+    Reads an e57 with pye57 and converts it to a vtk polydata composed of 0D vertices
+    """
 
     def __init__(self, e57: pye57.E57):
         self._e57 = e57
