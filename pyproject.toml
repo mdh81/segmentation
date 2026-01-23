@@ -32,4 +32,5 @@ segmentation = "segmentation.segment:main"
 pytest = "^9.0.2"
 pytest-mock = "^3.15.1"
 math3d-py = "^1.4.0"
+matplotlib = "^3.10.8"
 
