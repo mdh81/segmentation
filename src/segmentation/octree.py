@@ -86,11 +86,11 @@ class Octant:
         if self.level == Octant._MAX_LEVELS:
             polydata: vtkPolyData = vtkPolyData()
             points: vtkPoints = vtkPoints()
-            corners: List[Vector3] = self._bounds.corners()
+            corners: List[Vector3] = self._bounds.corners
             points.SetNumberOfPoints(len(corners))
             for i in range(len(corners)):
                 points.SetPoint(i, corners[i].x, corners[i].y, corners[i].z)
-            edges: List[List[int]] = self._bounds.edges()
+            edges: List[List[int]] = self._bounds.edges
             cells: vtkCellArray = vtkCellArray()
             cells.AllocateEstimate(len(edges), _NUM_PTS_IN_OCTANT_FACE_LOOP)
             for a, b, c, d in edges:
@@ -104,7 +104,7 @@ class Octant:
 class Octree:
 
     def __init__(self, bounds: AABB = None):
-        self._octant: Octant | None = Octant(bounds.min(), bounds.max()) if bounds else None
+        self._octant: Octant | None = Octant(bounds.min, bounds.max) if bounds else None
 
     @classmethod
     def from_polydata(cls, polydata: vtkPolyData):
@@ -116,7 +116,6 @@ class Octree:
         return Octree(bounds)
 
     def add(self, trimeshes: List[TriangleMesh]):
-        append_polydata: vtkAppendPolyData = vtkAppendPolyData()
         bounds: AABB = AABB()
         x: Extent = Extent()
         y: Extent = Extent()
@@ -129,7 +128,7 @@ class Octree:
                 z.update(transformed_vertex.z)
             trimesh_bounds: AABB = AABB(x, y, z)
             bounds.merge(trimesh_bounds)
-        self._octant = Octant(bounds.min(), bounds.max())
+        self._octant = Octant(bounds.min, bounds.max)
 
     @property
     def leaves(self) -> List[Octant]:
